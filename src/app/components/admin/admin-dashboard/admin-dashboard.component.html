@@ -1,0 +1,10 @@
+<div class="admin-container">
+    <h2>Admin Dashboard</h2>
+    <div class="admin-cards">
+      <div *ngFor="let section of adminSections" class="card" (click)="navigate(section.link)">
+        <span class="icon">{{ section.icon }}</span>
+        <h3>{{ section.title }}</h3>
+      </div>
+    </div>
+  </div>
+  

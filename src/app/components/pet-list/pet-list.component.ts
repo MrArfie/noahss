@@ -132,7 +132,7 @@ export class PetDetailComponent implements OnInit {
     this.petService.getPetById(petId).subscribe(petData => {
       if (petData) {
         this.pet = petData;
-        this.selectedImage = petData.images[0]; // Default image
+        this.selectedImage = petData.image[0]; // Default image
       }
     });
   }

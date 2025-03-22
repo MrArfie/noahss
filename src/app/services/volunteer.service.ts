@@ -1,97 +1,62 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { VolunteerApplication } from '../models/volunteer.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class VolunteerService {
-  private apiUrl = 'https://your-api-url/volunteers'; // Replace with your backend API
+  private apiUrl = 'https://your-api-url/volunteers'; // 🔁 Replace with actual API
 
   constructor(private http: HttpClient) {}
 
-  /**
-   * Submit a new volunteer application
-   * @param volunteerData - The volunteer application details
-   * @returns Observable<any> - Response from the backend
-   */
+  /** 📝 Submit Volunteer Application */
   submitVolunteerApplication(volunteerData: VolunteerApplication): Observable<any> {
-    return this.http.post(this.apiUrl, { 
-      ...volunteerData, 
-      createdAt: new Date(), 
-      updatedAt: new Date() 
-    }).pipe(
-      map(response => response),
-      catchError(this.handleError)
-    );
+    const payload = {
+      ...volunteerData,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    return this.http.post(this.apiUrl, payload).pipe(catchError(this.handleError));
   }
 
-  /**
-   * Retrieve all volunteer applications
-   * @returns Observable<VolunteerApplication[]> - List of applications from the backend
-   */
+  /** 📋 Get All Applications */
   getVolunteerApplications(): Observable<VolunteerApplication[]> {
-    return this.http.get<VolunteerApplication[]>(this.apiUrl).pipe(
-      map(response => response),
-      catchError(this.handleError)
-    );
+    return this.http.get<VolunteerApplication[]>(this.apiUrl).pipe(catchError(this.handleError));
   }
 
-  /**
-   * Retrieve a single volunteer application by ID
-   * @param id - Volunteer application ID
-   * @returns Observable<VolunteerApplication> - The volunteer application details
-   */
+  /** 🔍 Get Single Application by ID */
   getVolunteerApplicationById(id: number): Observable<VolunteerApplication> {
-    return this.http.get<VolunteerApplication>(`${this.apiUrl}/${id}`).pipe(
-      map(response => response),
-      catchError(this.handleError)
-    );
+    return this.http.get<VolunteerApplication>(`${this.apiUrl}/${id}`).pipe(catchError(this.handleError));
   }
 
-  /**
-   * Update the status and notes of a volunteer application
-   * @param id - Volunteer application ID
-   * @param status - New status (Pending, Approved, Rejected)
-   * @param notes - Admin notes
-   * @returns Observable<any> - Response from the backend
-   */
-  updateVolunteerStatus(id: number, status: 'Pending' | 'Approved' | 'Rejected', notes?: string): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/${id}`, { status, notes, updatedAt: new Date() }).pipe(
-      map(response => response),
-      catchError(this.handleError)
-    );
+  /** ✅ Update Status & Notes */
+  updateVolunteerStatus(
+    id: number,
+    status: 'Pending' | 'Approved' | 'Rejected',
+    notes?: string
+  ): Observable<any> {
+    const updatePayload = {
+      status,
+      notes,
+      updatedAt: new Date()
+    };
+    return this.http.patch(`${this.apiUrl}/${id}`, updatePayload).pipe(catchError(this.handleError));
   }
 
-  /**
-   * Delete a volunteer application
-   * @param id - Volunteer application ID
-   * @returns Observable<any> - Response from the backend
-   */
+  /** ❌ Delete Application */
   deleteVolunteerApplication(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`).pipe(
-      map(response => response),
-      catchError(this.handleError)
-    );
+    return this.http.delete(`${this.apiUrl}/${id}`).pipe(catchError(this.handleError));
   }
 
-  /**
-   * Handle API Errors
-   * @param error - The error response
-   * @returns Observable<never> - Throws an error message
-   */
+  /** ⚠️ Error Handler */
   private handleError(error: any): Observable<never> {
-    console.error('API Error:', error);
-    let errorMessage = 'An unexpected error occurred. Please try again later.';
-    if (error.error instanceof ErrorEvent) {
-      // Client-side errors
-      errorMessage = `Error: ${error.error.message}`;
-    } else {
-      // Server-side errors
-      errorMessage = `Server Error: ${error.status}\nMessage: ${error.message}`;
-    }
-    return throwError(() => new Error(errorMessage));
+    console.error('VolunteerService Error:', error);
+    const message = error.error instanceof ErrorEvent
+      ? `Client Error: ${error.error.message}`
+      : `Server Error ${error.status}: ${error.message}`;
+    return throwError(() => new Error(message));
   }
 }
