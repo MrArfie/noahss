@@ -1,143 +1,153 @@
-import { animate, keyframes, style, transition, trigger } from '@angular/animations';
+import {
+  animate,
+  style,
+  transition,
+  trigger
+} from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { Pet } from '../../models/pet.model';
 import { PetService } from '../../services/pet.service';
 
 @Component({
-  selector: 'app-pet-detail',
+  selector: 'app-pet-list',
   standalone: true,
   imports: [CommonModule, RouterModule],
+  animations: [
+    trigger('fadeInUp', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(20px)' }),
+        animate('600ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+      ])
+    ])
+  ],
   template: `
-    <section class="pet-detail-page">
-      <div class="pet-container" *ngIf="pet" @fadeIn>
-        
-        <!-- Image Gallery -->
-        <div class="gallery">
-          <img [src]="selectedImage" class="main-image" @zoomEffect>
-          <div class="thumbnail-container">
-            <img *ngFor="let img of pet.images" [src]="img" (click)="changeImage(img)" class="thumbnail">
-          </div>
-        </div>
+    <section class="pet-list">
+      <h2>🐾 Pets Available for Adoption</h2>
 
-        <!-- Pet Information -->
-        <div class="pet-info">
-          <h1>{{ pet.name }}</h1>
-          <p><strong>Breed:</strong> {{ pet.breed }}</p>
-          <p><strong>Age:</strong> {{ pet.age }} years old</p>
-          <p><strong>Description:</strong> {{ pet.description }}</p>
-          
-          <div class="adoption-status" *ngIf="pet.adopted">✅ Already Adopted</div>
-          <a *ngIf="!pet.adopted" routerLink="/adoption-form" class="button">Adopt {{ pet.name }} ❤️</a>
+      <div class="pet-grid">
+        <div class="pet-card" *ngFor="let pet of pets" [@fadeInUp]>
+          <img [src]="Array.isArray(pet.image) ? pet.image[0] : pet.image" [alt]="pet.name" />
+          <div class="pet-info">
+            <h3>{{ pet.name }}</h3>
+            <p>{{ pet.breed }} • {{ pet.age }} yrs</p>
+            <span class="tag" [ngClass]="{ adopted: pet.adopted, available: !pet.adopted }">
+              {{ pet.adopted ? 'Adopted' : 'Available' }}
+            </span>
+            <br />
+            <a [routerLink]="['/pet', pet.id]" class="view-btn">👁️ View Details</a>
+          </div>
         </div>
       </div>
     </section>
   `,
-  animations: [
-    trigger('fadeIn', [
-      transition(':enter', [
-        style({ opacity: 0 }),
-        animate('1s ease-in', style({ opacity: 1 }))
-      ])
-    ]),
-    trigger('zoomEffect', [
-      transition(':enter', [
-        animate('0.5s ease-in-out', keyframes([
-          style({ transform: 'scale(0.8)', opacity: 0, offset: 0 }),
-          style({ transform: 'scale(1.05)', opacity: 1, offset: 0.8 }),
-          style({ transform: 'scale(1)', offset: 1 })
-        ]))
-      ])
-    ])
-  ],
   styles: [`
-    .pet-detail-page {
+    .pet-list {
+      padding: 40px;
       text-align: center;
-      padding: 50px;
-      max-width: 900px;
-      margin: auto;
     }
-    .pet-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 40px;
-      align-items: center;
+
+    .pet-list h2 {
+      font-size: 2rem;
+      margin-bottom: 30px;
+      color: #2e7d32;
     }
-    .gallery {
-      max-width: 400px;
+
+    .pet-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 25px;
+      justify-items: center;
     }
-    .main-image {
+
+    .pet-card {
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
       width: 100%;
-      border-radius: 10px;
-      transition: transform 0.3s;
+      max-width: 300px;
     }
-    .main-image:hover {
-      transform: scale(1.05);
+
+    .pet-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
     }
-    .thumbnail-container {
-      display: flex;
-      justify-content: center;
-      margin-top: 10px;
+
+    .pet-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
     }
-    .thumbnail {
-      width: 60px;
-      height: 60px;
-      border-radius: 5px;
-      margin: 5px;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    .thumbnail:hover {
-      transform: scale(1.1);
-      border: 2px solid #a4c639;
-    }
+
     .pet-info {
-      max-width: 400px;
+      padding: 15px;
       text-align: left;
-      background: rgba(255, 255, 255, 0.9);
-      padding: 20px;
-      border-radius: 10px;
     }
-    .adoption-status {
+
+    .pet-info h3 {
+      margin: 0 0 5px;
+      font-size: 1.3rem;
+      color: #4caf50;
+    }
+
+    .pet-info p {
+      margin: 0 0 10px;
+      font-size: 0.95rem;
+      color: #555;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      border-radius: 50px;
       font-weight: bold;
-      color: green;
-      margin-top: 10px;
     }
-    .button {
+
+    .available {
+      background-color: #c8e6c9;
+      color: #2e7d32;
+    }
+
+    .adopted {
+      background-color: #ffcdd2;
+      color: #c62828;
+    }
+
+    .view-btn {
       display: inline-block;
       margin-top: 10px;
-      padding: 12px 24px;
-      background: #a4c639; /* Apple Green */
+      padding: 6px 12px;
+      background: #2196f3;
       color: white;
-      font-weight: bold;
-      border-radius: 5px;
+      font-size: 0.85rem;
       text-decoration: none;
-      transition: 0.3s;
+      border-radius: 6px;
+      transition: background 0.3s ease;
     }
-    .button:hover {
-      background: #8ebf20;
+
+    .view-btn:hover {
+      background: #1976d2;
+    }
+
+    @media (max-width: 600px) {
+      .pet-list {
+        padding: 20px;
+      }
     }
   `]
 })
-export class PetDetailComponent implements OnInit {
-  pet!: Pet;
-  selectedImage!: string;
+export class PetListComponent implements OnInit {
+  pets: Pet[] = [];
 
-  constructor(private route: ActivatedRoute, private petService: PetService) {}
+  constructor(private petService: PetService) {}
 
   ngOnInit(): void {
-    const petId = Number(this.route.snapshot.paramMap.get('id'));
-    this.petService.getPetById(petId).subscribe(petData => {
-      if (petData) {
-        this.pet = petData;
-        this.selectedImage = petData.image[0]; // Default image
-      }
+    this.petService.getPets().subscribe(data => {
+      this.pets = data;
     });
-  }
-
-  changeImage(image: string): void {
-    this.selectedImage = image;
   }
 }

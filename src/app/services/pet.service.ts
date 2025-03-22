@@ -11,27 +11,33 @@ export class PetService {
 
   constructor(private http: HttpClient) {}
 
+  /** 🐾 Get all pets */
   getPets(): Observable<Pet[]> {
     return this.http.get<Pet[]>(this.apiUrl);
   }
 
-  getPetById(id: number): Observable<Pet> {
+  /** 🐾 Get a single pet by ID */
+  getPetById(id: string): Observable<Pet> {
     return this.http.get<Pet>(`${this.apiUrl}/${id}`);
   }
 
+  /** ➕ Add a new pet */
   addPet(pet: Pet): Observable<Pet> {
     return this.http.post<Pet>(this.apiUrl, pet);
   }
 
-  updatePet(id: number, updatedPet: Partial<Pet>): Observable<Pet> {
+  /** ✏️ Update existing pet by ID */
+  updatePet(id: string, updatedPet: Partial<Pet>): Observable<Pet> {
     return this.http.put<Pet>(`${this.apiUrl}/${id}`, updatedPet);
   }
 
-  deletePet(id: number): Observable<void> {
+  /** 🗑️ Delete pet by ID */
+  deletePet(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
-  markAsAdopted(id: number): Observable<Pet> {
+  /** ✅ Mark pet as adopted */
+  markAsAdopted(id: string): Observable<Pet> {
     return this.http.patch<Pet>(`${this.apiUrl}/${id}/adopt`, {});
   }
 }

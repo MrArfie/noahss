@@ -20,13 +20,11 @@ import { AuthService } from '../../services/auth.service';
   template: `
     <nav class="navbar" [@slideDown]>
       <div class="left-section">
-        <!-- 🏠 Noah's Ark Logo + Title -->
         <img src="images/logo.ico" alt="Noah's Ark Logo" class="logo" />
         <h1 class="title">Noah's Ark</h1>
       </div>
 
-      <!-- 🐶 Running Dog Animation -->
-      <div class="dog-container">
+      <div class="dog-container" aria-hidden="true">
         <img src="images/running-dog.gif" alt="Running Dog" class="running-dog" />
       </div>
 
@@ -52,8 +50,7 @@ import { AuthService } from '../../services/auth.service';
         </ng-template>
       </ul>
 
-      <!-- 🍔 Mobile Menu -->
-      <div class="hamburger" (click)="toggleMenu()">
+      <div class="hamburger" (click)="toggleMenu()" aria-label="Toggle Menu">
         <span [class.active]="menuOpen"></span>
         <span [class.active]="menuOpen"></span>
         <span [class.active]="menuOpen"></span>
@@ -61,54 +58,45 @@ import { AuthService } from '../../services/auth.service';
     </nav>
   `,
   styles: [`
-    /* ✨ Navbar Styling */
     .navbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 12px 30px;
-      background-color: white; /* ✅ Green Theme */
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      position: relative;
+      background-color: #fff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      position: sticky;
       top: 0;
       z-index: 1000;
-      overflow: hidden;
     }
 
-    /* 🔧 Left Section: Logo + Title */
     .left-section {
       display: flex;
       align-items: center;
       gap: 10px;
     }
 
-    /* 🏠 Logo Image */
     .logo {
-      height: 50px;
-      object-fit: contain;
-      max-width: 100%;
+      height: 45px;
     }
 
-    /* 🏷️ Title beside the logo */
     .title {
       font-size: 22px;
       font-weight: bold;
-      color: green; /* ✅ Green Theme */
+      color: green;
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
     }
 
-    /* 🐶 Running Dog Animation */
     .dog-container {
       position: absolute;
       top: 50%;
-      left: -100px;
+      left: -80px;
       transform: translateY(-50%);
       animation: moveDog 6s linear infinite;
     }
 
     .running-dog {
-      width: 60px;
+      width: 55px;
       height: auto;
     }
 
@@ -117,7 +105,6 @@ import { AuthService } from '../../services/auth.service';
       100% { left: 100%; }
     }
 
-    /* 🔗 Navigation Links */
     .nav-links {
       list-style: none;
       display: flex;
@@ -127,18 +114,18 @@ import { AuthService } from '../../services/auth.service';
 
     .nav-links a {
       text-decoration: none;
-      color: black; /* ✅ Green Theme */
+      color: black;
       font-weight: 500;
       font-size: 16px;
       transition: color 0.3s ease-in-out;
     }
 
-    .nav-links a:hover, .nav-links a.active {
-      color: #C8E6C9;
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: #7bbf1a;
       font-weight: bold;
     }
 
-    /* 🔑 Authentication Buttons */
     .auth {
       display: flex;
       gap: 10px;
@@ -146,59 +133,51 @@ import { AuthService } from '../../services/auth.service';
     }
 
     .welcome {
-      color: white;
+      color: #333;
       font-weight: 500;
     }
 
-    /* 🚀 Login & Register Buttons */
     .btn {
-      background-color: #2E7D32;
+      background: #2e7d32;
       color: white;
       padding: 8px 16px;
       border-radius: 4px;
       font-weight: bold;
-      text-decoration: none;
-      transition: background 0.3s;
       cursor: pointer;
-    }
-
-    .btn:hover {
-      background-color: #1B5E20;
+      transition: background 0.3s;
+      text-decoration: none;
     }
 
     .btn.logout {
-      background-color: #D32F2F;
-      border-radius: 6px;
-      padding: 8px 20px;
+      background: #d32f2f;
     }
 
-    .btn.logout:hover {
-      background-color: #B71C1C;
+    .btn:hover {
+      background: #1b5e20;
     }
 
     .btn.register {
       background: none;
-      border: 2px solid white;
-      color: white;
+      border: 2px solid #2e7d32;
+      color: #2e7d32;
     }
 
     .btn.register:hover {
-      background: white;
-      color: #4CAF50;
+      background: #2e7d32;
+      color: white;
     }
 
-    /* 🍔 Mobile Menu Button */
     .hamburger {
       display: none;
       flex-direction: column;
-      cursor: pointer;
       gap: 4px;
+      cursor: pointer;
     }
 
     .hamburger span {
       width: 25px;
       height: 3px;
-      background-color: white;
+      background: #333;
       transition: all 0.3s;
     }
 
@@ -214,16 +193,17 @@ import { AuthService } from '../../services/auth.service';
       transform: rotate(-45deg) translateY(-6px);
     }
 
-    /* 📱 Responsive Navbar */
     @media (max-width: 768px) {
-      .hamburger { display: flex; }
+      .hamburger {
+        display: flex;
+      }
 
       .nav-links {
         position: absolute;
         top: 70px;
         left: 0;
         right: 0;
-        background-color: #4CAF50;
+        background-color: #f5f5f5;
         flex-direction: column;
         gap: 15px;
         padding: 20px;
@@ -231,11 +211,12 @@ import { AuthService } from '../../services/auth.service';
         box-shadow: 0 4px 10px rgba(0,0,0,0.1);
       }
 
-      .nav-links.open { display: flex; }
+      .nav-links.open {
+        display: flex;
+      }
 
       .auth {
         flex-direction: column;
-        width: 100%;
         align-items: center;
       }
     }

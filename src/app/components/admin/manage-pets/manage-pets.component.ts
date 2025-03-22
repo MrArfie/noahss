@@ -23,64 +23,57 @@ import { PetService } from '../../../services/pet.service';
     ])
   ],
   template: `
-    <section class="manage-pets" [@fadeIn]>
+    <section class="manage-pets" @fadeIn>
       <h2>🐾 Manage Pets</h2>
 
-      <!-- 🔍 Search Bar -->
-      <input
-        type="text"
-        [(ngModel)]="searchQuery"
-        placeholder="🔍 Search by name or breed"
-        (input)="filterPets()"
-      />
+      <!-- Search -->
+      <input type="text" class="search-bar" placeholder="Search by name or breed..." [(ngModel)]="searchQuery" (input)="filterPets()" />
 
-      <!-- 🐶 Add/Edit Pet Form -->
-      <form (ngSubmit)="isEditing ? updatePet() : addPet()" class="pet-form">
-        <input [(ngModel)]="form.name" name="name" placeholder="Pet Name" required />
-        <input [(ngModel)]="form.breed" name="breed" placeholder="Breed" required />
-        <input type="number" [(ngModel)]="form.age" name="age" placeholder="Age" required min="0" />
-        <select [(ngModel)]="form.category" name="category" required>
-          <option value="" disabled>Select Category</option>
-          <option value="dog">🐶 Dog</option>
-          <option value="cat">🐱 Cat</option>
-          <option value="other">🐾 Other</option>
+      <!-- Pet Form -->
+      <form class="pet-form" (ngSubmit)="isEditing ? updatePet() : addPet()">
+        <input type="text" placeholder="Name" [(ngModel)]="form.name" name="name" required />
+        <input type="text" placeholder="Breed" [(ngModel)]="form.breed" name="breed" required />
+        <input type="number" placeholder="Age" [(ngModel)]="form.age" name="age" required />
+        <select [(ngModel)]="form.category" name="category">
+          <option value="dog">Dog</option>
+          <option value="cat">Cat</option>
+          <option value="other">Other</option>
         </select>
-        <input [(ngModel)]="form.image" name="image" placeholder="Image URL" required />
-        <textarea
-          [(ngModel)]="form.description"
-          name="description"
-          placeholder="Description"
-        ></textarea>
-        <button type="submit">
-          {{ isEditing ? 'Update Pet' : 'Add Pet' }}
-        </button>
-        <button type="button" (click)="resetForm()" *ngIf="isEditing">
-          Cancel
-        </button>
+        <textarea placeholder="Description" [(ngModel)]="form.description" name="description"></textarea>
+        <input type="file" (change)="onImageUpload($event)" />
+        <div class="preview" *ngIf="form.image">
+          <img [src]="form.image" alt="Preview" />
+        </div>
+        <div class="form-actions">
+          <button type="submit">{{ isEditing ? 'Update' : 'Add' }} Pet</button>
+          <button type="button" class="cancel" (click)="resetForm()">Cancel</button>
+        </div>
       </form>
 
-      <!-- 📋 Pet List -->
+      <!-- Pet Table -->
       <table>
         <thead>
           <tr>
+            <th>Image</th>
             <th>Name</th>
             <th>Breed</th>
             <th>Age</th>
             <th>Category</th>
-            <th>Image</th>
+            <th>Status</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let pet of filteredPets">
+            <td><img [src]="pet.image" alt="{{ pet.name }}" /></td>
             <td>{{ pet.name }}</td>
             <td>{{ pet.breed }}</td>
             <td>{{ pet.age }}</td>
             <td>{{ pet.category }}</td>
-            <td><img [src]="pet.image || 'assets/pets/default.jpg'" [alt]="pet.name" /></td>
+            <td>{{ pet.adopted ? 'Adopted' : 'Available' }}</td>
             <td>
-              <button class="edit" (click)="editPet(pet)">✏️</button>
-              <button class="delete" (click)="deletePet(pet.id!)">🗑️</button>
+              <button class="edit" (click)="editPet(pet)">Edit</button>
+              <button class="delete" (click)="deletePet(pet.id!)">Delete</button>
             </td>
           </tr>
         </tbody>
@@ -90,43 +83,77 @@ import { PetService } from '../../../services/pet.service';
   styles: [`
     .manage-pets {
       padding: 30px;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    h2 {
       text-align: center;
-      animation: fadeIn 0.5s ease-in;
+      margin-bottom: 20px;
+      color: #2e7d32;
     }
 
-    input, select, textarea {
-      padding: 8px;
-      margin: 5px;
-      border-radius: 5px;
+    .search-bar {
+      padding: 10px;
+      width: 100%;
+      margin-bottom: 20px;
+      border-radius: 6px;
       border: 1px solid #ccc;
-      font-size: 14px;
-    }
-
-    input[type="text"], input[type="number"], textarea {
-      width: 220px;
-    }
-
-    select {
-      width: 140px;
-    }
-
-    textarea {
-      height: 60px;
-      resize: vertical;
+      font-size: 16px;
     }
 
     .pet-form {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
       margin-bottom: 30px;
+    }
+
+    input, select, textarea {
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+
+    .preview img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-top: 8px;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    button {
+      padding: 10px 14px;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button.cancel {
+      background-color: #e0e0e0;
+    }
+
+    button:hover {
+      opacity: 0.9;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
     }
 
     th, td {
@@ -135,39 +162,33 @@ import { PetService } from '../../../services/pet.service';
       text-align: center;
     }
 
-    img {
-      width: 60px;
-      height: 60px;
-      border-radius: 6px;
-      object-fit: cover;
-    }
-
-    button {
-      padding: 8px 12px;
-      margin: 2px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background-color 0.3s ease;
-    }
-
-    .edit {
-      background-color: #ffc107;
+    th {
+      background-color: #4caf50;
       color: white;
     }
 
-    .edit:hover {
-      background-color: #e0a800;
+    img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+
+    .edit {
+      background-color: #ff9800;
+      color: white;
     }
 
     .delete {
       background-color: #f44336;
       color: white;
+      margin-left: 5px;
     }
 
-    .delete:hover {
-      background-color: #d32f2f;
+    @media (max-width: 600px) {
+      .pet-form {
+        grid-template-columns: 1fr;
+      }
     }
   `]
 })
@@ -177,16 +198,7 @@ export class ManagePetsComponent implements OnInit {
   searchQuery = '';
   isEditing = false;
 
-  form: Pet = {
-    id: 0,
-    name: '',
-    breed: '',
-    age: 0,
-    image: '',
-    description: '',
-    adopted: false,
-    category: 'dog'
-  };
+  form: Pet = this.getEmptyPetForm();
 
   constructor(private petService: PetService) {}
 
@@ -202,9 +214,10 @@ export class ManagePetsComponent implements OnInit {
   }
 
   filterPets(): void {
+    const query = this.searchQuery.toLowerCase();
     this.filteredPets = this.pets.filter(pet =>
-      pet.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-      pet.breed.toLowerCase().includes(this.searchQuery.toLowerCase())
+      pet.name.toLowerCase().includes(query) ||
+      pet.breed.toLowerCase().includes(query)
     );
   }
 
@@ -228,23 +241,38 @@ export class ManagePetsComponent implements OnInit {
     });
   }
 
-  deletePet(id: number): void {
+  deletePet(id: string): void {
     if (confirm('Are you sure you want to delete this pet?')) {
       this.petService.deletePet(id).subscribe(() => this.loadPets());
     }
   }
 
   resetForm(): void {
-    this.form = {
-      id: 0,
+    this.form = this.getEmptyPetForm();
+    this.isEditing = false;
+  }
+
+  onImageUpload(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files?.length) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.form.image = reader.result as string;
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  private getEmptyPetForm(): Pet {
+    return {
+      id: '',
       name: '',
       breed: '',
       age: 0,
       image: '',
-      category: 'dog',
+      description: '',
       adopted: false,
-      description: ''
+      category: 'dog'
     };
-    this.isEditing = false;
   }
 }

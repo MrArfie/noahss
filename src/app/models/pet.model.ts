@@ -1,6 +1,5 @@
 export interface Pet {
-    _id?: string; // MongoDB ID
-    id?: number;  // Optional number ID (if needed)
+    id?: string; // Optional because it might not exist before creation (MongoDB _id)
     name: string;
     breed: string;
     age: number;

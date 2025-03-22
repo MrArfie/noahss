@@ -1,5 +1,5 @@
 export interface VolunteerApplication {
-    id?: number;
+    id?: string; // ✅ Updated to string
     name: string;
     email: string;
     phone: string;

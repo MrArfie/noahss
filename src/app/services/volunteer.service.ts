@@ -8,7 +8,7 @@ import { VolunteerApplication } from '../models/volunteer.model';
   providedIn: 'root'
 })
 export class VolunteerService {
-  private apiUrl = 'https://your-api-url/volunteers'; // 🔁 Replace with actual API
+  private apiUrl = 'http://localhost:5000/api/volunteers'; // ✅ Adjust to your API
 
   constructor(private http: HttpClient) {}
 
@@ -17,24 +17,24 @@ export class VolunteerService {
     const payload = {
       ...volunteerData,
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
+      status: 'Pending'
     };
-    return this.http.post(this.apiUrl, payload).pipe(catchError(this.handleError));
+    return this.http.post(this.apiUrl, payload).pipe(
+      catchError(this.handleError)
+    );
   }
 
-  /** 📋 Get All Applications */
+  /** 📋 Get All Volunteer Applications (Admin View) */
   getVolunteerApplications(): Observable<VolunteerApplication[]> {
-    return this.http.get<VolunteerApplication[]>(this.apiUrl).pipe(catchError(this.handleError));
+    return this.http.get<VolunteerApplication[]>(this.apiUrl).pipe(
+      catchError(this.handleError)
+    );
   }
 
-  /** 🔍 Get Single Application by ID */
-  getVolunteerApplicationById(id: number): Observable<VolunteerApplication> {
-    return this.http.get<VolunteerApplication>(`${this.apiUrl}/${id}`).pipe(catchError(this.handleError));
-  }
-
-  /** ✅ Update Status & Notes */
+  /** ✅ Update Volunteer Status */
   updateVolunteerStatus(
-    id: number,
+    id: string,
     status: 'Pending' | 'Approved' | 'Rejected',
     notes?: string
   ): Observable<any> {
@@ -43,15 +43,19 @@ export class VolunteerService {
       notes,
       updatedAt: new Date()
     };
-    return this.http.patch(`${this.apiUrl}/${id}`, updatePayload).pipe(catchError(this.handleError));
+    return this.http.patch(`${this.apiUrl}/${id}`, updatePayload).pipe(
+      catchError(this.handleError)
+    );
   }
 
-  /** ❌ Delete Application */
-  deleteVolunteerApplication(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`).pipe(catchError(this.handleError));
+  /** ❌ Delete Volunteer by ID */
+  deleteVolunteer(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`).pipe(
+      catchError(this.handleError)
+    );
   }
 
-  /** ⚠️ Error Handler */
+  /** ⚠️ Central Error Handler */
   private handleError(error: any): Observable<never> {
     console.error('VolunteerService Error:', error);
     const message = error.error instanceof ErrorEvent
