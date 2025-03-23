@@ -159,7 +159,7 @@ export class AdminLoginComponent {
         if (res.token && res.user.role === 'admin') {
           this.authService.saveSession(res);
           this.toastr.success('Admin login successful!', 'Welcome');
-          this.router.navigate(['/admin']);
+          this.router.navigate(['/admin/dashboard']);
         } else {
           this.toastr.error('Access denied. Only admins can access this page.', 'Unauthorized');
         }
