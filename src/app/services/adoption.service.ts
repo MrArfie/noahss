@@ -2,25 +2,24 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { AdoptionRequest } from '../models/adoption-request.model'; // ✅ Confirm this path
+import { environment } from '../../environments/environment';
+import { AdoptionRequest } from '../models/adoption-request.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdoptionService {
-  private apiUrl = 'https://your-api-url/adoptions'; // 🔁 Replace with actual API endpoint
+  private apiUrl = `${environment.apiUrl}/adoptions`;
 
   constructor(private http: HttpClient) {}
 
-  /**
-   * ✨ Submit a new adoption request
-   */
+  /** ✨ Submit a new adoption request */
   submitAdoption(adoptionData: AdoptionRequest): Observable<any> {
     const payload: AdoptionRequest = {
       ...adoptionData,
       status: 'Pending',
-      createdAt: new Date(),   // ✅ Date object
-      updatedAt: new Date(),   // ✅ Date object
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
 
     return this.http.post(this.apiUrl, payload).pipe(
@@ -28,31 +27,25 @@ export class AdoptionService {
     );
   }
 
-  /**
-   * 📋 Get all adoption requests
-   */
+  /** 📋 Get all adoption requests */
   getAllAdoptions(): Observable<AdoptionRequest[]> {
     return this.http.get<AdoptionRequest[]>(this.apiUrl).pipe(
       catchError(this.handleError)
     );
   }
 
-  /**
-   * 🔍 Get a single adoption request by ID
-   */
+  /** 🔍 Get a single adoption request by ID */
   getAdoptionById(id: string | number): Observable<AdoptionRequest> {
     return this.http.get<AdoptionRequest>(`${this.apiUrl}/${id}`).pipe(
       catchError(this.handleError)
     );
   }
 
-  /**
-   * ✏️ Update an adoption request (status, notes, etc.)
-   */
+  /** ✏️ Update an adoption request (status, notes, etc.) */
   updateAdoption(id: string | number, updateData: Partial<AdoptionRequest>): Observable<any> {
     const payload = {
       ...updateData,
-      updatedAt: new Date(),  // ✅ Proper Date type
+      updatedAt: new Date(),
     };
 
     return this.http.patch(`${this.apiUrl}/${id}`, payload).pipe(
@@ -60,18 +53,14 @@ export class AdoptionService {
     );
   }
 
-  /**
-   * 🗑️ Delete an adoption request
-   */
+  /** 🗑️ Delete an adoption request */
   deleteAdoption(id: string | number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`).pipe(
       catchError(this.handleError)
     );
   }
 
-  /**
-   * 🚨 Centralized error handling
-   */
+  /** 🚨 Centralized error handling */
   private handleError(error: any): Observable<never> {
     console.error('AdoptionService Error:', error);
 

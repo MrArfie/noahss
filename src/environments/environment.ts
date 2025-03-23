@@ -1,5 +1,5 @@
 export const environment = {
-    production: false,
-    apiUrl: 'http://localhost:5000/api'  // 👈 for local backend
+    production: false, // or true for prod
+    apiUrl: 'https://noah-s-backend.onrender.com/api'
   };
   

@@ -1,28 +1,47 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { Donation } from '../models/donation.model'; // ✅ Ensure correct import path
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
+import { Donation } from '../models/donation.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DonationService {
-  private apiUrl = 'https://your-api-url/donations'; // Replace with Firebase or backend API
+  private apiUrl = `${environment.apiUrl}/donations`;
 
   constructor(private http: HttpClient) {}
 
+  /** 💰 Process a new donation */
   processDonation(donationData: Donation): Observable<any> {
-    return this.http.post(this.apiUrl, { 
-      ...donationData, 
-      createdAt: new Date() 
-    });
+    const payload = {
+      ...donationData,
+      createdAt: new Date()
+    };
+    return this.http.post(this.apiUrl, payload).pipe(
+      catchError(this.handleError)
+    );
   }
 
+  /** 📋 Get all donations */
   getDonations(): Observable<Donation[]> {
-    return this.http.get<Donation[]>(this.apiUrl);
+    return this.http.get<Donation[]>(this.apiUrl).pipe(
+      catchError(this.handleError)
+    );
   }
 
-  getDonationById(id: number): Observable<Donation> {
-    return this.http.get<Donation>(`${this.apiUrl}/${id}`);
+  /** 🔍 Get a single donation by ID */
+  getDonationById(id: string): Observable<Donation> {
+    return this.http.get<Donation>(`${this.apiUrl}/${id}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  /** ⚠️ Error handler */
+  private handleError(error: any): Observable<never> {
+    console.error('DonationService Error:', error);
+    const message = error?.error?.msg || 'Something went wrong with donation service.';
+    return throwError(() => new Error(message));
   }
 }
