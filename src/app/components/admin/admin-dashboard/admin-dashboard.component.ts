@@ -6,110 +6,149 @@ import { AuthService } from '../../../services/auth.service';
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule], // ✅ Import RouterModule for <router-outlet>
+  imports: [CommonModule, RouterModule],
   template: `
     <div class="dashboard">
       <!-- Sidebar -->
       <aside [class.collapsed]="isSidebarCollapsed">
-        <h2 *ngIf="!isSidebarCollapsed">Admin Panel</h2>
-        <ul>
-          <li><a routerLink="/admin/users" routerLinkActive="active">Manage Users</a></li>
-          <li><a routerLink="/admin/pets" routerLinkActive="active">Manage Pets</a></li>
-          <li><a routerLink="/admin/adoptions" routerLinkActive="active">Manage Adoptions</a></li>
-          <li><a routerLink="/admin/volunteers" routerLinkActive="active">Manage Volunteers</a></li>
-        </ul>
-        <button class="logout" (click)="logout()">Logout</button>
+        <div class="sidebar-top">
+          <h2 *ngIf="!isSidebarCollapsed">🐾 Noah's Admin</h2>
+          <ul>
+            <li>
+              <a routerLink="/admin/users" routerLinkActive="active" title="Users">
+                <i class="fas fa-users"></i>
+                <span *ngIf="!isSidebarCollapsed">Manage Users</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/admin/pets" routerLinkActive="active" title="Pets">
+                <i class="fas fa-dog"></i>
+                <span *ngIf="!isSidebarCollapsed">Manage Pets</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/admin/adoptions" routerLinkActive="active" title="Adoptions">
+                <i class="fas fa-heart"></i>
+                <span *ngIf="!isSidebarCollapsed">Manage Adoptions</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/admin/volunteers" routerLinkActive="active" title="Volunteers">
+                <i class="fas fa-hands-helping"></i>
+                <span *ngIf="!isSidebarCollapsed">Manage Volunteers</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <button class="logout" (click)="logout()" [title]="'Logout'">
+          <i class="fas fa-sign-out-alt"></i>
+          <span *ngIf="!isSidebarCollapsed">Logout</span>
+        </button>
       </aside>
 
       <!-- Main Content -->
       <main>
         <header>
-          <button class="toggle-btn" (click)="toggleSidebar()">☰</button>
-          <h1>Welcome, {{ adminName }}!</h1>
+          <div class="left">
+            <button class="toggle-btn" (click)="toggleSidebar()">
+              <i class="fas fa-bars"></i>
+            </button>
+            <h1>Welcome, {{ adminName }}!</h1>
+          </div>
+          <div class="right">
+            <i class="fas fa-user-circle profile-icon"></i>
+          </div>
         </header>
 
-        <!-- Router Outlet (For Admin Sub-pages) -->
-        <router-outlet></router-outlet>
+        <div class="content-area">
+          <router-outlet></router-outlet>
+        </div>
       </main>
     </div>
   `,
   styles: [`
+    * {
+      box-sizing: border-box;
+    }
+
     .dashboard {
       display: flex;
       height: 100vh;
+      overflow: hidden;
+      background-color: #f4f6f9;
     }
 
-    /* Sidebar */
     aside {
-      width: 250px;
-      background: #2c3e50;
+      width: 260px;
+      background: #1e293b;
       color: white;
-      padding: 20px;
-      transition: width 0.3s ease-in-out;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      transition: width 0.3s ease;
+      padding: 20px 15px;
     }
 
     aside.collapsed {
       width: 80px;
     }
 
-    aside h2 {
-      font-size: 18px;
-      margin-bottom: 20px;
-      transition: opacity 0.3s;
+    .sidebar-top h2 {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 30px;
+      color: #60a5fa;
+      white-space: nowrap;
     }
 
-    aside.collapsed h2 {
-      opacity: 0;
-      visibility: hidden;
-    }
-
-    aside ul {
+    ul {
       list-style: none;
       padding: 0;
     }
 
-    aside ul li {
-      margin: 15px 0;
+    li {
+      margin-bottom: 20px;
     }
 
-    aside ul li a {
+    a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white;
       text-decoration: none;
+      padding: 10px 12px;
+      border-radius: 6px;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    a.active,
+    a:hover {
+      background-color: #334155;
+      transform: translateX(4px);
+    }
+
+    .logout {
+      background: #ef4444;
       color: white;
-      display: block;
       padding: 10px;
-      border-radius: 4px;
-      transition: background 0.3s;
-    }
-
-    aside ul li a:hover,
-    aside ul li a.active {
-      background: #34495e;
-    }
-
-    button.logout {
-      width: 100%;
-      padding: 10px;
-      background: red;
       border: none;
-      color: white;
-      margin-top: auto;
+      border-radius: 6px;
       cursor: pointer;
-      border-radius: 5px;
-      transition: background 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: background 0.3s ease;
     }
 
-    button.logout:hover {
-      background: darkred;
+    .logout:hover {
+      background: #dc2626;
     }
 
-    /* Main Content */
     main {
-      flex: 1;
-      padding: 20px;
-      background: #ecf0f1;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
     }
 
     header {
@@ -117,34 +156,61 @@ import { AuthService } from '../../../services/auth.service';
       justify-content: space-between;
       align-items: center;
       background: white;
-      padding: 15px;
-      border-radius: 5px;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 15px 25px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      border-bottom: 1px solid #e5e7eb;
     }
 
-    button.toggle-btn {
+    .toggle-btn {
+      font-size: 20px;
       background: none;
       border: none;
-      font-size: 24px;
       cursor: pointer;
+      color: #374151;
+    }
+
+    .left h1 {
+      font-size: 18px;
+      margin-left: 15px;
+    }
+
+    .left {
+      display: flex;
+      align-items: center;
+    }
+
+    .right .profile-icon {
+      font-size: 28px;
+      color: #60a5fa;
+    }
+
+    .content-area {
+      flex-grow: 1;
+      padding: 25px;
+      overflow-y: auto;
     }
 
     @media (max-width: 768px) {
       aside {
-        width: 80px;
+        width: 70px;
+        padding: 15px 10px;
       }
 
-      aside h2 {
+      aside h2,
+      aside span {
         display: none;
       }
 
-      aside ul li a {
-        text-align: center;
+      a {
+        justify-content: center;
       }
 
-      main {
-        padding: 10px;
+      header h1 {
+        font-size: 16px;
+      }
+
+      .content-area {
+        padding: 15px;
       }
     }
   `]
@@ -158,7 +224,7 @@ export class AdminDashboardComponent implements OnInit {
   ngOnInit(): void {
     const user = this.authService.getUser();
     if (!user || user.role !== 'admin') {
-      this.router.navigate(['/admin-login']); // ✅ Redirect unauthorized users
+      this.router.navigate(['/admin-login']);
     } else {
       this.adminName = user.name;
     }

@@ -7,16 +7,16 @@ import { Pet } from '../models/pet.model';
   providedIn: 'root'
 })
 export class PetService {
-  private apiUrl = 'http://localhost:5000/api/pets'; // Replace with your actual backend URL
+  private apiUrl = 'http://localhost:5000/api/pets'; // 🛠️ Adjust for production
 
   constructor(private http: HttpClient) {}
 
-  /** 🐾 Get all pets */
+  /** 🐾 Fetch all pets */
   getPets(): Observable<Pet[]> {
     return this.http.get<Pet[]>(this.apiUrl);
   }
 
-  /** 🐾 Get a single pet by ID */
+  /** 🔍 Get a specific pet by ID */
   getPetById(id: string): Observable<Pet> {
     return this.http.get<Pet>(`${this.apiUrl}/${id}`);
   }
@@ -26,18 +26,28 @@ export class PetService {
     return this.http.post<Pet>(this.apiUrl, pet);
   }
 
-  /** ✏️ Update existing pet by ID */
+  /** ✏️ Update an existing pet */
   updatePet(id: string, updatedPet: Partial<Pet>): Observable<Pet> {
     return this.http.put<Pet>(`${this.apiUrl}/${id}`, updatedPet);
   }
 
-  /** 🗑️ Delete pet by ID */
+  /** 🗑️ Delete a pet */
   deletePet(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
-  /** ✅ Mark pet as adopted */
+  /** ✅ Mark a pet as adopted */
   markAsAdopted(id: string): Observable<Pet> {
     return this.http.patch<Pet>(`${this.apiUrl}/${id}/adopt`, {});
+  }
+
+  /** 🌟 Optional: Get only available (not adopted) pets */
+  getAvailablePets(): Observable<Pet[]> {
+    return this.http.get<Pet[]>(`${this.apiUrl}?adopted=false`);
+  }
+
+  /** 🌟 Optional: Get featured pets (if backend supports it) */
+  getFeaturedPets(): Observable<Pet[]> {
+    return this.http.get<Pet[]>(`${this.apiUrl}/featured`);
   }
 }
