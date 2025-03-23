@@ -11,7 +11,7 @@ import { PetDetailComponent } from './components/pet-detail/pet-detail.component
 import { VolunteerComponent } from './components/volunteer/volunteer.component';
 
 // 🔐 Auth Components
-import { AdminLoginComponent } from './components/auth/admin-login/admin-login.component';
+import { AdminLoginComponent } from './components/admin/admin-login/admin-login.component';
 import { LoginComponent } from './components/auth/login/login.component';
 import { RegisterComponent } from './components/auth/register/register.component';
 
