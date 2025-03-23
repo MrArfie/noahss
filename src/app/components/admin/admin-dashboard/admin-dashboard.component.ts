@@ -195,6 +195,15 @@ import { AuthService } from '../../../services/auth.service';
         width: 100%;
         height: auto;
         padding: 15px;
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        left: -250px;
+        transition: left 0.3s ease;
+      }
+
+      aside.collapsed {
+        left: 0;
       }
 
       .sidebar-top ul li a {
