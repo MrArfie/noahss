@@ -1,13 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment'; // 👈 import environment
 import { Pet } from '../models/pet.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PetService {
-  private apiUrl = 'http://localhost:5000/api/pets'; // 🛠️ Adjust for production
+  private apiUrl = `${environment.apiUrl}/pets`; // ✅ dynamic base URL
 
   constructor(private http: HttpClient) {}
 

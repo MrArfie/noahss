@@ -1,14 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment'; // ✅ import environment
 import { User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  // ✅ Replace with your actual API endpoint
-  private apiUrl = 'http://localhost:5000/api/users';
+  private apiUrl = `${environment.apiUrl}/users`; // ✅ dynamic backend URL
 
   constructor(private http: HttpClient) {}
 

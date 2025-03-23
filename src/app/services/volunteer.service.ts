@@ -2,13 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment'; // ✅ Use environment variable
 import { VolunteerApplication } from '../models/volunteer.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class VolunteerService {
-  private apiUrl = 'http://localhost:5000/api/volunteers'; // ✅ Adjust to your API
+  private apiUrl = `${environment.apiUrl}/volunteers`; // 🔗 dynamic base URL
 
   constructor(private http: HttpClient) {}
 
