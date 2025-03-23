@@ -11,9 +11,14 @@ export class NoAuthGuard implements CanActivate {
   canActivate(): boolean {
     if (this.auth.isAuthenticated()) {
       const role = this.auth.getUserRole();
-      this.router.navigate([role === 'admin' ? '/admin' : '/admin-dashboard']);
-      return false;
+      // Redirect authenticated users to their respective dashboards
+      if (role === 'admin') {
+        this.router.navigate(['/admin']);
+      } else {
+        this.router.navigate(['/admin-dashboard']);
+      }
+      return false;  // Prevent accessing login/registration pages
     }
-    return true;
+    return true;  // Allow unauthenticated users to access login/registration pages
   }
 }
