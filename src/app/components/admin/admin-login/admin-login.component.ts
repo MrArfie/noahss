@@ -102,7 +102,6 @@ import { AuthService } from '../../../services/auth.service';
       background-color: #65a514;
     }
 
-    /* 📱 Mobile Responsiveness */
     @media (max-width: 480px) {
       .admin-login-container {
         margin: 40px 20px;
@@ -161,10 +160,12 @@ export class AdminLoginComponent {
         this.loading = false;
         console.log('[Admin Login] Auth Response:', res);
 
-        if (res?.token && res?.user?.role === 'admin') {
+        const isAdmin = res?.user?.role === 'admin';
+        if (res.token && isAdmin) {
           this.authService.saveSession(res);
           this.toastr.success('Admin login successful!', 'Welcome');
-          this.router.navigate(['/admin']);
+          // ✅ Slight delay to ensure session save before redirect
+          setTimeout(() => this.router.navigate(['/admin']), 100);
         } else {
           this.toastr.error('Access denied. Only admins can access this page.', 'Unauthorized');
         }
