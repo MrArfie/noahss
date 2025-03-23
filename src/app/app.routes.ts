@@ -62,6 +62,4 @@ export const routes: Routes = [
     ]
   },
 
-  // 🚨 Wildcard Fallback
-  { path: '**', redirectTo: '', pathMatch: 'full' }
 ];
