@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, catchError, tap, throwError } from 'rxjs';
+import { environment } from '../../environments/environment'; // ✅ Import your env config
 
 // 👤 Interfaces
 export interface User {
@@ -18,7 +19,7 @@ export interface AuthResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:5000/api/auth'; // ✅ Update if using environment.ts
+  private apiUrl = `${environment.apiUrl}/auth`; // ✅ Dynamic base URL for backend
 
   private authStatusSubject = new BehaviorSubject<boolean>(this.hasToken());
   private currentUserSubject = new BehaviorSubject<User | null>(this.getStoredUser());
@@ -46,7 +47,7 @@ export class AuthService {
   }
 
   /** 💾 Save session to localStorage */
-  public saveSession(response: AuthResponse): void {
+  saveSession(response: AuthResponse): void {
     localStorage.setItem('auth-token', response.token);
     localStorage.setItem('user', JSON.stringify(response.user));
     this.authStatusSubject.next(true);
@@ -94,14 +95,14 @@ export class AuthService {
 
   /** ❗ Global error handler */
   private handleError(error: any): Observable<never> {
-    let message = 'Something went wrong.';
+    let message = 'Something went wrong. Please try again later.';
 
     if (error?.error?.msg) {
       message = error.error.msg;
     } else if (Array.isArray(error?.error?.errors)) {
       message = error.error.errors.map((e: any) => e.msg).join(', ');
-    } else if (error.message) {
-      message = error.message;
+    } else if (error.status === 0) {
+      message = 'Unable to connect to the server. Check your internet connection or CORS policy.';
     }
 
     console.error('AuthService Error:', error);
