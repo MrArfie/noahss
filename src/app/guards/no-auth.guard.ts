@@ -11,7 +11,7 @@ export class NoAuthGuard implements CanActivate {
   canActivate(): boolean {
     if (this.auth.isAuthenticated()) {
       const role = this.auth.getUserRole();
-      this.router.navigate([role === 'admin' ? '/admin' : '/user-dashboard']);
+      this.router.navigate([role === 'admin' ? '/admin' : '/admin-dashboard']);
       return false;
     }
     return true;
