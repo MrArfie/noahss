@@ -21,7 +21,6 @@ import { AuthService } from '../../../services/auth.service';
             formControlName="email"
             placeholder="Admin email"
             required
-            autofocus
           />
         </div>
 
@@ -50,14 +49,12 @@ import { AuthService } from '../../../services/auth.service';
       background: #fff;
       border-radius: 10px;
       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease-in-out;
     }
 
     h2 {
       text-align: center;
       margin-bottom: 25px;
       color: #333;
-      font-size: 24px;
     }
 
     .form-group {
@@ -65,10 +62,9 @@ import { AuthService } from '../../../services/auth.service';
     }
 
     label {
-      font-weight: 500;
-      margin-bottom: 5px;
       display: block;
-      font-size: 15px;
+      margin-bottom: 5px;
+      font-weight: 500;
     }
 
     input {
@@ -77,7 +73,6 @@ import { AuthService } from '../../../services/auth.service';
       font-size: 16px;
       border: 1px solid #ccc;
       border-radius: 6px;
-      box-sizing: border-box;
     }
 
     input:focus {
@@ -93,16 +88,14 @@ import { AuthService } from '../../../services/auth.service';
       width: 100%;
       border: none;
       border-radius: 6px;
-      cursor: pointer;
       font-size: 16px;
-      transition: background 0.3s;
+      cursor: pointer;
     }
 
     button:hover {
       background-color: #65a514;
     }
 
-    /* 📱 Mobile Responsiveness */
     @media (max-width: 480px) {
       .admin-login-container {
         margin: 40px 20px;
@@ -113,18 +106,10 @@ import { AuthService } from '../../../services/auth.service';
         font-size: 20px;
       }
 
-      label {
-        font-size: 14px;
-      }
-
-      input {
-        font-size: 14px;
-        padding: 10px;
-      }
-
+      input,
       button {
         font-size: 14px;
-        padding: 12px;
+        padding: 10px;
       }
     }
   `]
@@ -147,32 +132,28 @@ export class AdminLoginComponent {
 
   onSubmit(): void {
     if (this.loginForm.invalid) {
-      this.toastr.error('Please enter valid admin credentials.', 'Validation Error');
+      this.toastr.error('Please fill in valid email and password.', 'Invalid Input');
       return;
     }
 
     const { email, password } = this.loginForm.value;
     this.loading = true;
 
-    console.log('[Admin Login] Trying login with:', { email, password });
-
     this.authService.login(email, password).subscribe({
       next: (res) => {
         this.loading = false;
-        console.log('[Admin Login] Auth Response:', res);
-
-        if (res?.token && res?.user?.role === 'admin') {
+        if (res?.user?.role === 'admin') {
           this.authService.saveSession(res);
           this.toastr.success('Admin login successful!', 'Welcome');
           this.router.navigate(['/admin']);
         } else {
-          this.toastr.error('Access denied. Only admins can access this page.', 'Unauthorized');
+          this.toastr.error('Access denied. Only admins are allowed.', 'Unauthorized');
         }
       },
       error: (err) => {
         this.loading = false;
-        console.error('[Admin Login] Error:', err);
-        this.toastr.error(err?.error?.msg || err.message || 'Login failed.', 'Login Error');
+        const message = err?.error?.msg || err.message || 'Login failed.';
+        this.toastr.error(message, 'Login Error');
       }
     });
   }
