@@ -34,7 +34,7 @@ export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'contact', component: ContactComponent },
   { path: 'adoption', component: AdoptionComponent },
-  { path: 'pet/:id', component: PetDetailComponent }, // ✅ Detail route
+  { path: 'pet/:id', component: PetDetailComponent },
   { path: 'volunteer', component: VolunteerComponent },
   { path: 'donation', component: DonationComponent },
   { path: 'donation-form', component: DonationFormComponent },
@@ -48,6 +48,13 @@ export const routes: Routes = [
   // ✅ User Dashboard
   { path: 'user-dashboard', component: UserDashboardComponent, canActivate: [AuthGuard] },
 
+  // ✅ Admin Redirect for base route
+  {
+    path: 'admin',
+    redirectTo: 'admin/pets',
+    pathMatch: 'full'
+  },
+
   // ✅ Admin Dashboard with Nested Routes
   {
     path: 'admin',
@@ -57,8 +64,7 @@ export const routes: Routes = [
       { path: 'users', component: ManageUsersComponent },
       { path: 'pets', component: ManagePetsComponent },
       { path: 'adoptions', component: ManageAdoptionsComponent },
-      { path: 'volunteers', component: ManageVolunteersComponent },
-      { path: '', redirectTo: 'pets', pathMatch: 'full' }
+      { path: 'volunteers', component: ManageVolunteersComponent }
     ]
   },
 
