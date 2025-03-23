@@ -37,19 +37,26 @@ import { RouterModule } from '@angular/router';
           <p><strong>📧 Email:</strong> <a href="mailto:info&#64;noahsark.org">info&#64;noahsark.org</a></p>
         </div>
 
-        <!-- Social Media -->
-        <div class="footer-social">
-          <h3>Follow Us</h3>
-          <div class="social-icons">
-            <a href="https://www.facebook.com/Noahsarkdogandcatshelter" target="_blank">
-              <img src="assets/images/facebook-icon.png" alt="Facebook">
-            </a>
-            <a href="https://www.instagram.com/noahsark" target="_blank">
-              <img src="assets/images/instagram-icon.png" alt="Instagram">
-            </a>
-            <a href="https://twitter.com/noahsark" target="_blank">
-              <img src="assets/images/twitter-icon.png" alt="Twitter">
-            </a>
+        <!-- Social Media and GIF -->
+        <div class="footer-social-gif">
+          <div class="footer-social">
+            <h3>Follow Us</h3>
+            <div class="social-icons">
+              <a href="https://www.facebook.com/Noahsarkdogandcatshelter" target="_blank">
+                <img src="images/fb.png" alt="Facebook">
+              </a>
+              <a href="https://www.instagram.com/noahsark" target="_blank">
+                <img src="images/in.jpg" alt="Instagram">
+              </a>
+              <a href="https://twitter.com/noahsark" target="_blank">
+                <img src="images/twit.png" alt="Twitter">
+              </a>
+            </div>
+          </div>
+          
+          <!-- GIF of man stroking his dog -->
+          <div class="footer-gif">
+            <img src="images/24.gif" alt="Man stroking his dog" class="footer-gif-img">
           </div>
         </div>
 
@@ -62,79 +69,175 @@ import { RouterModule } from '@angular/router';
   `,
   styles: [`
     .footer {
-      background: #222;
-      color: white;
-      padding: 40px 0;
+      background: #1c1c1c;
+      color: #e0e0e0;
+      padding: 60px 20px;
       font-size: 16px;
+      position: relative;
+      overflow: hidden;
+      font-family: 'Roboto', sans-serif;
     }
+
     .footer-container {
       display: flex;
       flex-wrap: wrap;
-      justify-content: space-around;
+      justify-content: space-between;
       max-width: 1200px;
       margin: auto;
-      padding: 20px;
+      gap: 40px;
     }
+
     .footer-logo {
       text-align: center;
-      max-width: 250px;
+      flex: 1 1 250px;
     }
+
     .footer-logo img {
-      width: 80px;
-      margin-bottom: 10px;
+      width: 100px;
+      margin-bottom: 15px;
     }
+
     .footer-logo h2 {
       color: #f8b400;
+      font-size: 24px;
+      margin-bottom: 10px;
     }
-    .footer-links, .footer-contact, .footer-social {
+
+    .footer-logo p {
+      font-size: 16px;
+      color: #e0e0e0;
+    }
+
+    .footer-links, .footer-contact {
       max-width: 250px;
+      flex: 1 1 250px;
     }
-    .footer-links h3, .footer-contact h3, .footer-social h3 {
-      color: #a4c639; /* Apple Green */
+
+    .footer-links h3, .footer-contact h3 {
+      color: #a4c639;
+      font-size: 20px;
+      margin-bottom: 10px;
     }
+
     .footer-links ul {
       list-style: none;
       padding: 0;
+      margin: 0;
     }
+
     .footer-links ul li {
-      margin: 5px 0;
+      margin: 8px 0;
     }
+
     .footer-links ul li a {
-      color: white;
+      color: #e0e0e0;
       text-decoration: none;
-      transition: color 0.3s;
+      font-size: 16px;
+      transition: color 0.3s ease-in-out;
     }
+
     .footer-links ul li a:hover {
       color: #a4c639;
     }
+
     .footer-contact a {
       color: #a4c639;
       text-decoration: none;
       font-weight: bold;
     }
+
     .footer-contact a:hover {
       text-decoration: underline;
     }
+
+    /* Combine social media icons and GIF */
+    .footer-social-gif {
+      display: flex;
+      flex-direction: row; /* Align social icons and GIF side by side */
+      gap: 30px; /* Space between the items */
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
     .footer-social .social-icons {
       display: flex;
-      gap: 15px;
-      margin-top: 10px;
+      gap: 20px;
+      margin-top: 15px;
     }
+
     .footer-social .social-icons a {
       display: inline-block;
-      transition: transform 0.3s;
+      transition: transform 0.3s ease-in-out;
     }
+
     .footer-social .social-icons a:hover {
       transform: scale(1.1);
     }
+
     .footer-social .social-icons img {
-      width: 30px;
+      width: 35px;
+      height: 35px; /* Ensures the icons have the same size */
+      object-fit: contain; /* Prevents stretching or distortion of the images */
+      transition: opacity 0.3s ease-in-out;
     }
+
+    .footer-social .social-icons img:hover {
+      opacity: 0.8;
+    }
+
+    .footer-gif {
+      max-width: 250px;
+      flex: 1 1 250px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    .footer-gif-img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 15px;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .footer-gif-img:hover {
+      transform: scale(1.05);
+    }
+
     .footer-bottom {
       text-align: center;
-      margin-top: 20px;
+      margin-top: 40px;
       border-top: 1px solid #444;
-      padding-top: 10px;
+      padding-top: 15px;
+      font-size: 14px;
+    }
+
+    .footer-bottom p {
+      color: #e0e0e0;
+    }
+
+    @media (max-width: 768px) {
+      .footer-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+      }
+
+      .footer-logo, .footer-links, .footer-contact {
+        max-width: 100%;
+        text-align: center;
+      }
+
+      .footer-social-gif {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .footer-gif {
+        margin-top: 25px;
+      }
     }
   `]
 })
