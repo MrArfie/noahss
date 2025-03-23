@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 
 // 🌐 Public Components
-import { AdoptionFormComponent } from './components/adoption-form/adoption-form.component';
 import { AdoptionComponent } from './components/adoption/adoption.component';
 import { ContactComponent } from './components/contact/contact.component';
 import { DonationFormComponent } from './components/donation-form/donation-form.component';
@@ -28,6 +27,7 @@ import { ManageVolunteersComponent } from './components/admin/manage-volunteers/
 // 🛡️ Guards
 import { AdminGuard } from './guards/admin.guard';
 import { AuthGuard } from './guards/auth.guard';
+import { NoAuthGuard } from './guards/no-auth.guard';
 
 export const routes: Routes = [
   // ✅ Public Pages
@@ -39,16 +39,15 @@ export const routes: Routes = [
   { path: 'donation', component: DonationComponent },
   { path: 'donation-form', component: DonationFormComponent },
 
-  // ✅ Auth Pages
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
-  { path: 'admin-login', component: AdminLoginComponent },
-  { path: 'adoption-form', component: AdoptionFormComponent, canActivate: [AuthGuard] },
+  // ✅ Auth Pages (NoAuthGuard for login and registration)
+  { path: 'login', component: LoginComponent, canActivate: [NoAuthGuard] },
+  { path: 'register', component: RegisterComponent, canActivate: [NoAuthGuard] },
+  { path: 'admin-login', component: AdminLoginComponent, canActivate: [NoAuthGuard] },
 
-  // ✅ User Dashboard
+  // ✅ User Dashboard (Authenticated Users)
   { path: 'user-dashboard', component: UserDashboardComponent, canActivate: [AuthGuard] },
 
-  // ✅ Admin Dashboard with Nested Routes
+  // ✅ Admin Dashboard (Authenticated Admins)
   {
     path: 'admin',
     component: AdminDashboardComponent,
@@ -58,8 +57,10 @@ export const routes: Routes = [
       { path: 'pets', component: ManagePetsComponent },
       { path: 'adoptions', component: ManageAdoptionsComponent },
       { path: 'volunteers', component: ManageVolunteersComponent },
-      { path: '', redirectTo: 'pets', pathMatch: 'full' }
+      { path: '', redirectTo: 'pets', pathMatch: 'full' }  // Default route within admin dashboard
     ]
   },
 
+  // 🚨 Wildcard Route
+  { path: '**', redirectTo: '', pathMatch: 'full' }  // Redirect to home if route not found
 ];
