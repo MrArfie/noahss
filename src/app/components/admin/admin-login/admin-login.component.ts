@@ -149,32 +149,27 @@ export class AdminLoginComponent {
       this.toastr.error('Please enter valid admin credentials.', 'Validation Error');
       return;
     }
-
-    const { email, password } = this.loginForm.value;
+  
     this.loading = true;
-
-    console.log('[Admin Login] Trying login with:', { email, password });
-
+    const { email, password } = this.loginForm.value;
+    
     this.authService.login(email, password).subscribe({
       next: (res) => {
         this.loading = false;
-        console.log('[Admin Login] Auth Response:', res);
-
-        const isAdmin = res?.user?.role === 'admin';
-        if (res.token && isAdmin) {
+        if (res.token && res.user.role === 'admin') {
           this.authService.saveSession(res);
           this.toastr.success('Admin login successful!', 'Welcome');
-          // ✅ Slight delay to ensure session save before redirect
-          setTimeout(() => this.router.navigate(['/admin']), 100);
+          this.router.navigate(['/admin']);
         } else {
           this.toastr.error('Access denied. Only admins can access this page.', 'Unauthorized');
         }
       },
       error: (err) => {
         this.loading = false;
-        console.error('[Admin Login] Error:', err);
-        this.toastr.error(err?.error?.msg || err.message || 'Login failed.', 'Login Error');
+        this.toastr.error('Login failed.', 'Login Error');
+        console.error('Login error:', err);
       }
     });
   }
+  
 }
